@@ -18,7 +18,6 @@ package main
 import (
 	"encoding/json"
 	"flag"
-	"fmt"
 	"os"
 )
 
@@ -41,9 +40,10 @@ var config struct {
 var (
 	configFile = flag.String("config", "config.json", "configuration file")
 	lang       = flag.String("lang", "en", "output language")
-	update     = flag.Bool("update", false, "update the wikia database")
-	translate  = flag.Bool("translate", false, "translate the ygopro database")
 	mainWiki   = flag.Bool("main", false, "always use data from English wikia")
+	translate  = flag.Bool("translate", false, "translate the ygopro database")
+	update     = flag.Bool("update", false, "update the wikia database")
+	ruling     = flag.String("ruling", "", "download cards rulings (specify the filename)")
 )
 
 func main() {
@@ -67,17 +67,13 @@ func main() {
 		config.Pendulum = "|" + *lang + "_pendulum_effect = "
 	}
 
+	if *ruling != "" {
+		getRulings()
+	}
 	if *update {
 		wikia()
 	}
 	if *translate {
 		tranlate()
-	}
-}
-
-func catch(err error) {
-	if err != nil {
-		fmt.Println(err)
-		os.Exit(1)
 	}
 }
